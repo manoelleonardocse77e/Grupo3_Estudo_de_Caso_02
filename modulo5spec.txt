@@ -1,0 +1,16 @@
+vou deixar criado dois módulos, um deles com menu, e outro sem.
+
+O módulo tem uma função de verificar arquivo, caso o arquivo em questão não exista, ela cria outro.
+
+# Exemplo de uso do código sem menu
+prontuario = ProntuarioEletronico('cadastropacientes.csv', 'registrosdiagnosticos.csv', 'acompanhartratamentos.csv', 'evolucaoclinica.csv', 'anexosdocumentos.csv')
+
+prontuario.cadastrar_paciente('Maria Souza', 50, 'Feminino', 'Hipertensão', 'João Souza (marido)')
+
+prontuario.registrar_diagnostico('Maria Souza', '2023-10-28', 'Diabetes tipo 2', 'Ajuste na dieta e monitoramento regular')
+
+prontuario.acompanhar_tratamento('Maria Souza', 'Insulina', 'Exercícios regulares', 'Acompanhamento nutricional')
+
+prontuario.documentar_evolucao('Maria Souza', '2023-11-02', 'Pressão arterial estável', 'Níveis de glicose controlados', 'Aumento da atividade física')
+
+prontuario.anexar_documento('Maria Souza', 'Registro de pressão arterial')
