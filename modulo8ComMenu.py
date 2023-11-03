@@ -1,3 +1,6 @@
+# Nesse código dá pra acicionar as métricas de ocupação de leitos, e eficiência no uso de equipamentos
+# Tem o código alternativo que consegue receber um relatório pronto, mas tem que implementar ele dentro desse.
+
 
 
 import csv
