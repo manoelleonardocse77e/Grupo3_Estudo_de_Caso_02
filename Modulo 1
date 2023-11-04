@@ -1,0 +1,130 @@
+import csv
+import time
+
+leitos = {
+    'UTI': {
+        'total': 10,
+        'ocupados': 0
+    },
+    'Ala A': {
+        'total': 20,
+        'ocupados': 0
+    },
+    'Ala B': {
+        'total': 15,
+        'ocupados': 0
+    }
+}
+
+def atualizar_csv():
+    with open('ocupacao_leitos.csv', 'w', newline='') as arquivo_csv:
+        writer = csv.writer(arquivo_csv)
+        writer.writerow(['Ala', 'Leitos Totais', 'Leitos Ocupados'])
+        for ala, info in leitos.items():
+            writer.writerow([ala, info['total'], info['ocupados']])
+
+
+def monitorar_leitos():
+    while True:
+        print("\nMonitoramento em Tempo Real:")
+        for ala, info in leitos.items():
+            print(f"{ala}: {info['ocupados']} leitos em uso")
+            print(f"Leitos disponiveis: {info['total'] - info['ocupados']}")
+            print("=-=" * 10)
+        for ala, info in leitos.items():
+            if info['ocupados'] >= info['total']:
+                print(f"ALERTA: Capacidade máxima atingida em {ala}!")
+
+        time.sleep(30)
+
+def priorizar_leitos(ala, gravidade):
+    if leitos[ala]['ocupados'] < leitos[ala]['total']:
+        print(f"Admitindo paciente na {ala} devido à gravidade: {gravidade}")
+        leitos[ala]['ocupados'] += 1
+        atualizar_csv()
+    else:
+        print(f"Todos os leitos na {ala} estão ocupados. Aguarde.")
+
+
+def alocar_paciente_auto():
+    paciente_id = input("Digite o ID do paciente: ")
+    gravidade = input("Digite a gravidade do caso (de 1 a 10): ")
+
+    try:
+        gravidade = int(gravidade)
+        if gravidade < 1 or gravidade > 10:
+            print("Gravidade fora da faixa válida. Deve estar entre 1 e 10.")
+        else:
+            if gravidade >= 8:
+                priorizar_leitos('UTI', f"Gravidade {gravidade}")
+            elif gravidade >= 5:
+                priorizar_leitos('Ala A', f"Gravidade {gravidade}")
+            else:
+                priorizar_leitos('Ala B', f"Gravidade {gravidade}")
+    except ValueError:
+        print("Gravidade inválida. Deve ser um número de 1 a 10.")
+
+
+def notificar_disponibilidade():
+    while True:
+        for ala, info in leitos.items():
+            if info['ocupados'] < info['total']:
+                print(f"Notificação: Leito disponível em {ala}")
+        time.sleep(60)
+
+
+def historico_ocupacao():
+    with open('ocupacao_leitos.csv') as arquivo_csv:
+        reader = csv.reader(arquivo_csv)
+        for linha in reader:
+            print(f"{linha[0]}: {linha[2]} / {linha[1]} leitos ocupados")
+
+
+def gerar_relatorio():
+    with open('ocupacao_leitos.csv') as arquivo_csv:
+        reader = csv.reader(arquivo_csv)
+        for linha in reader:
+            print(f"{linha[0]}: {linha[2]} / {linha[1]} leitos ocupados")
+
+
+def alerta_capacidade_maxima():
+    while True:
+        for ala, info in leitos.items():
+            if info['ocupados'] >= info['total'] - 1:
+                print(f"ALERTA: Capacidade máxima se aproximando em {ala}!")
+        time.sleep(60)
+
+
+if __name__ == "__main__":
+    atualizar_csv()
+
+    priorizar_leitos('UTI', 'Crítico')
+    priorizar_leitos('Ala A', 'Moderado')
+    priorizar_leitos('Ala B', 'Leve')
+
+    import threading
+
+    monitoramento_thread = threading.Thread(target=monitorar_leitos)
+    notificacao_thread = threading.Thread(target=notificar_disponibilidade)
+    alerta_thread = threading.Thread(target=alerta_capacidade_maxima)
+
+    monitoramento_thread.start()
+    notificacao_thread.start()
+    alerta_thread.start()
+
+    while True:
+        print("\nOpções:")
+        print("1. Gerar Relatório de Ocupação")
+        print("2. Admitir Paciente Automaticamente")
+        print("3. Sair")
+        escolha = input("Escolha a opção: ")
+        if escolha == '1':
+            gerar_relatorio()
+        elif escolha == '2':
+            alocar_paciente_auto()
+        elif escolha == '3':
+            break
+
+    monitoramento_thread.join()
+    notificacao_thread.join()
+    alerta_thread.join()
