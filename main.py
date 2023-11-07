@@ -2,6 +2,7 @@ import csv
 import time
 import pandas as pd
 import os
+import sys
 
 #Começo do Módulo 1
 def Modulo1():
@@ -128,6 +129,7 @@ def Modulo1():
             alocar_paciente_auto()
         elif escolha == '3':
             main()
+            break
 
     monitoramento_thread.join()
     notificacao_thread.join()
@@ -931,7 +933,7 @@ def main2():
     case 1:
       Localizar_arquivos()
     case 2:
-      Excluir_arquivos()
+      main3()
     case 3:
       main()
     case _:
@@ -939,38 +941,77 @@ def main2():
       main2()
 #Fim do Menu 2
 
+#Menu 3
+def main3():
+  excluir = int(input('Qual arquivo deseja excluir:\n1 - Ocupação de leitos\n 2 - Historico de equipamento\n 3 - Medicamentos\n 4 - Visitantes\n 5 - Lista de Profissionais\n '))
 
+  match excluir:
+    case 1:
+      head = ['Ala','Leitos Totais','Leitos Ocupados']
+      apagar_informacoes_csv('ocupacao_leitos.csv', head)
+    case 2:
+      head = []
+      apagar_informacoes_csv('historico_equipamento.csv', head)
+    case 3:
+      head = ['ID','Nome','Princípio Ativo','Dosagem','Forma de Administração']
+      apagar_informacoes_csv('medicamentos.csv',head)
+    case 4:
+      head = []
+      apagar_informacoes_csv('visitantes.csv', head)
+    case 5:
+      head = ["ID", "Nome", "Cargo", "Experiencia", "Contato", "Plantao", "Horas_Trabalhadas"]
+      apagar_informacoes_csv('Lista_Profissionais.csv', head)
+    case _:
+      print('Selecione uma opção valida!')
+
+#Fim Menu 3
 
 #Funções de Localização e Exclusão de arquivos
 def Localizar_arquivos():
-  localizar = int(input('Digite o número do arquivo que deseja localizar:\n 1 - Ocupação de leitos\n 2 - Historico de equipamento\n 3 - Medicamentos\n 4 - Visitantes\n 5 - Lista de Profissionais: '))
-  def excluir_informacoes(nome_arquivo, termo):
-    linhas_mantidas = []
-    with open(nome_arquivo, 'r') as arquivo:
+  
+  localizar = int(input('Digite o número do arquivo que deseja localizar:\n 1 - Ocupação de leitos\n 2 - Historico de equipamento\n 3 - Medicamentos\n 4 - Visitantes\n 5 - Lista de Profissionais\n '))
+
+  match localizar:
+    case 1:
+      with open('ocupacao_leitos.csv', 'r') as arquivo:
         leitor_csv = csv.reader(arquivo)
         for linha in leitor_csv:
-            if termo not in linha:
-                linhas_mantidas.append(linha)
-    with open(nome_arquivo, 'w', newline='') as arquivo:
-        escritor_csv = csv.writer(arquivo)
-        escritor_csv.writerows(linhas_mantidas)
-    print(f"As informações contendo '{termo}' foram excluídas do arquivo {nome_arquivo}.")
+            print(linha)
+    case 2:
+      with open('historico_equipamento.csv', 'r') as arquivo:
+        leitor_csv = csv.reader(arquivo)
+        for linha in leitor_csv:
+            print(linha)
+    case 3:
+      with open('medicamentos.csv', 'r') as arquivo:
+        leitor_csv = csv.reader(arquivo)
+        for linha in leitor_csv:
+            print(linha)
+    case 4:
+      with open('visitantes.csv', 'r') as arquivo:
+        leitor_csv = csv.reader(arquivo)
+        for linha in leitor_csv:
+            print(linha)
+    case 5:
+      with open('Lista_Profissionais.csv', 'r') as arquivo:
+        leitor_csv = csv.reader(arquivo)
+        for linha in leitor_csv:
+            print(linha)
 
-  if localizar == 1:
-    excluir_informacoes('ocupacao_leitos.csv', 'informacao_a_ser_excluida')
-  elif localizar == 2:
-    excluir_informacoes('historico_equipamento.csv', 'informacao_a_ser_excluida')
-  elif localizar == 3:
-    excluir_informacoes('medicamentos.csv', 'informacao_a_ser_excluida')
-  elif localizar == 4:
-    excluir_informacoes('visitantes.csv', 'informacao_a_ser_excluida')
-  elif localizar == 5:
-    excluir_informacoes('Lista_Profissionais.csv', 'informacao_a_ser_excluida')
-  else:
-    print("Opção inválida. Escolha um número de 1 a 5.")
 
-  # Chame a função para começar o processo
-  Localizar_arquivos()
+def apagar_informacoes_csv(filename, head):
+  if not os.path.exists(filename):
+    print(f"O arquivo '{filename}' não existe.")
+    return
+
+  with open(filename, 'w', newline='') as file:
+    writer = csv.writer(file)
+    header = [head]  # Defina o cabeçalho aqui
+    writer.writerow(header)
+
+  print(f"As informações do arquivo '{filename}' foram apagadas, mantendo apenas o cabeçalho.")
+
+#Fim das Funções de Localização e Exclusão de arquivos
 
 #Começo menu de escolhas
 def main():
@@ -987,6 +1028,7 @@ def main():
     match escolha:
       case 1:
         Modulo1()
+        break
       case 2:
         Modulo2()
       case 3:
