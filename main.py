@@ -107,16 +107,6 @@ def Modulo1():
     priorizar_leitos('Ala A', 'Moderado')
     priorizar_leitos('Ala B', 'Leve')
 
-    import threading
-
-    monitoramento_thread = threading.Thread(target=monitorar_leitos)
-    notificacao_thread = threading.Thread(target=notificar_disponibilidade)
-    alerta_thread = threading.Thread(target=alerta_capacidade_maxima)
-
-    monitoramento_thread.start()
-    notificacao_thread.start()
-    alerta_thread.start()
-
     while True:
         print("\nOpções:")
         print("1. Gerar Relatório de Ocupação")
@@ -129,11 +119,6 @@ def Modulo1():
             alocar_paciente_auto()
         elif escolha == '3':
             main()
-            break
-
-    monitoramento_thread.join()
-    notificacao_thread.join()
-    alerta_thread.join()
 
 #Fim do Módulo 1
 
@@ -1047,7 +1032,7 @@ def main():
         main2()
       case 0:
         print('Saindo do programa...')
-        break
+        sys.exit()
       case _:
         print("Módulo inválido. Tente novamente.")
 
